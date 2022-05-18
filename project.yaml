@@ -1,0 +1,36 @@
+specVersion: 1.0.0
+name: subquery-starter
+version: 0.0.4
+runner:
+  node:
+    name: '@subql/node'
+    version: '>=0.35.0'
+  query:
+    name: '@subql/query'
+    version: 0.24.0
+description: XCM explorer for Karura
+repository: 'https://github.com/subquery/subql-starter'
+schema:
+  file: ./schema.graphql
+network:
+  chainId: '0xbaf5aabe40646d11f0ee8abbdc64f4a4b7674925cba08e4a05ff9ebed6e2126b'
+  endpoint: 'wss://karura.api.onfinality.io/public-ws'
+  dictionary: 'https://api.subquery.network/sq/subquery/karura-dictionary'
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 1914500
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        # - handler: handleBlock
+        #   kind: substrate/BlockHandler
+        - handler: handleXCMpQueueEvent
+          kind: substrate/EventHandler
+          filter:
+            module: xcmpQueue
+            method: Success
+        - handler: handleXTokensTransferredMultiAssetEvent
+          kind: substrate/EventHandler
+          filter:
+            module: xTokens
+            method: TransferredMultiAssets

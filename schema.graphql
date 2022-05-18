@@ -1,0 +1,98 @@
+type Query {
+  Accounts(filter: AccountsFilterInput) : [Account]!
+  XcmpQueueEvents(filter: XcmpQueueEventsFilterInput) : [XcmpQueueEvent]!
+  AccountId20s(filter: AccountId20FilterInput) : [AccountId20]!
+  ExternalAccountId32s(filter: ExternalAccountId32FilterInput) : [ExternalAccountId32]!
+  XTokensTransferredMultiAssetsEvents(filter: XTokensTransferredMultiAssetsFilterInput) : [XTokensTransferredMultiAssetsEvent]!
+}
+
+input AccountsFilterInput {
+  id: StringQueryOperatorInput
+}
+
+input XcmpQueueEventsFilterInput {
+  xcmHash: StringQueryOperatorInput
+  toAccountId32: StringQueryOperatorInput
+}
+
+input AccountId20FilterInput {
+  id: StringQueryOperatorInput
+}
+input ExternalAccountId32FilterInput {
+  id: StringQueryOperatorInput
+}
+
+input XTokensTransferredMultiAssetsFilterInput {
+  xcmpMessage: StringQueryOperatorInput
+  extrinsicHash: StringQueryOperatorInput
+  fromAccountId20Id: StringQueryOperatorInput
+  toAccountId32Id: StringQueryOperatorInput
+  transferredToken: StringQueryOperatorInput
+}
+
+input StringQueryOperatorInput {
+  eq: String
+  ne: String
+  in: [String]
+  nin: [String]
+  regex: String
+  glob: String
+}
+
+
+type Account @entity {
+  id: ID! #this primary key is set as the toAddress
+}
+
+type XcmpQueueEvent @entity {
+    id: ID! #id is a required field
+    blockNum: BigInt
+    blockHash: String
+    timestamp: Date
+    xcmHash: String
+    extrinsicHash: String
+    fromAccountId32: String
+    toAccountId32: Account!  
+    totalWithdrawn: String
+    netReceivedAmount: String
+    token: String,
+    treasuryAddress: String
+    treasuryFees: String
+}
+
+
+type AccountId20 @entity {
+  id: ID! #this primary key is set as the toAddress
+}
+type ExternalAccountId32 @entity {
+  id: ID! #this primary key is set as the toAddress
+}
+
+type XTokensTransferredMultiAssetsEvent @entity {
+  id: ID! #id is a required field
+  blockNum: BigInt
+  blockHash: String
+  timestamp: Date
+  extrinsicHash: String
+  signer: String
+
+  transferredToken: String
+  transferredTokenGeneralKey: String
+
+  fromAccountId20: AccountId20
+  sentAmount: String
+  toAccountId32: ExternalAccountId32
+  toChainName: String
+  toChainCode: String
+  totalWithdrawn: String
+  burnedAmount: String
+  toPrecompile: String
+  payload: String
+  evmCoreErrorExitReason: String
+  returnedDeposit: String
+  treasuryFees: String
+  treasuryAdress: String
+  otherFees: String 
+  valAddress: String
+  xcmpMessage: String
+}
